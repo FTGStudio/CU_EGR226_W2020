@@ -1,22 +1,23 @@
+#include <stdbool.h>
+#include <stdio.h>
+#include "timer16.h"
+#include "timer32.h"
+#include "clock_logic.h"
+#include "piezzo.h"
+#include "rtc.h"
 #include "msp.h"
 #include "util.h"
 #include "hd44780/hd44780.h"
 #include "button.h"
 #include "led.h"
-
-#include <stdbool.h>
-#include <stdio.h>
-#include "piezzo_init.h"
-#include "rtc_init.h"
-#include "timer32_init.h"
-#include "timer16_init.h"
+#include "timer16.h"
+#include "timer32.h"
 #include "clock_logic.h"
+#include "lcd.h"
 #define LOAD_VALUE 0x02
 
 void system_init(void);
-
 void initialize_timer32(void);
-void lcd_init(void);
 void display_reaction_time(void);
 
 
@@ -31,26 +32,7 @@ void main(void)
 
     }
 }
-/*
- * Description:
- *
- * The LCD for this system is dedicated to Port 4.  Therefore we have
- * to configure the port as output.
- *
- * Returns:
- *
- * Nothing
- *
- */
-void lcd_init()
-{
-    P4->SEL1 &= ~0xFF;
-    P4->SEL0 &= ~0xFF;
-    P4->DIR |= 0xFF;
-    P1->SEL1 &= ~0xC0;
-    P1->SEL0 &= ~0xC0;
-    P1->DIR |= 0xC0;
-}
+
 /*
  *
  * Description:

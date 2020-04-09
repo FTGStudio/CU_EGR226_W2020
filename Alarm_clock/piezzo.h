@@ -5,11 +5,11 @@
  *      Author: Brandon Chase
  */
 
-#ifndef PIEZZO_INIT_H_
-#define PIEZZO_INIT_H_
+#ifndef PIEZZO_H_
+#define PIEZZO_H_
 
 
 
 
 
-#endif /* PIEZZO_INIT_H_ */
+#endif /* PIEZZO_H_ */

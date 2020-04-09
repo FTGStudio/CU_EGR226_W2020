@@ -6,5 +6,5 @@
  */
 
 
-#include "timer16_init.h"
+#include <timer16.h>
 

@@ -5,11 +5,11 @@
  *      Author: Brandon Chase
  */
 
-#ifndef TIMER16_INIT_H_
-#define TIMER16_INIT_H_
+#ifndef TIMER16_H_
+#define TIMER16_H_
 
 
 
 
 
-#endif /* TIMER16_INIT_H_ */
+#endif /* TIMER16_H_ */

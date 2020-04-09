@@ -6,5 +6,5 @@
  */
 
 
-#include "rtc_init.h"
+#include <rtc.h>
 

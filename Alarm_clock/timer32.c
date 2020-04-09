@@ -6,7 +6,7 @@
  */
 
 
-#include "timer32_init.h"
+#include <timer32.h>
 
 void initialize_timer32(void)
 {

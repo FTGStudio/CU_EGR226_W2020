@@ -5,11 +5,11 @@
  *      Author: Brandon Chase
  */
 
-#ifndef RTC_INIT_H_
-#define RTC_INIT_H_
+#ifndef RTC_H_
+#define RTC_H_
 
 
 
 
 
-#endif /* RTC_INIT_H_ */
+#endif /* RTC_H_ */
