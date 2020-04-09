@@ -4,7 +4,8 @@
  *  Created on: Apr 9, 2020
  *      Author: michael
  */
-
+#include "lcd.h"
+#include "msp.h"
 
 
 /*
@@ -18,6 +19,8 @@
  * Nothing
  *
  */
+
+
 void lcd_init()
 {
     P4->SEL1 &= ~0xFF;
