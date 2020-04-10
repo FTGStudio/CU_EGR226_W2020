@@ -15,7 +15,7 @@
 #include "clock_logic.h"
 #include "lcd.h"
 #define LOAD_VALUE 0x02
-
+// Test
 void system_init(void);
 void initialize_timer32(void);
 void display_reaction_time(void);
