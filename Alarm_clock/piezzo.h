@@ -9,7 +9,7 @@
 #define PIEZZO_H_
 
 
-
+void piezzo_init();
 
 
 #endif /* PIEZZO_H_ */

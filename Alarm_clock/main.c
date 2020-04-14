@@ -51,6 +51,7 @@ void system_init()
     __disable_irq();
     WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;     // stop watchdog timer
 
+    piezzo_init();
     init_button_zero();
     init_button_one();
     lcd_init();
