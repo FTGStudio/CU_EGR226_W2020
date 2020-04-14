@@ -50,7 +50,7 @@ void system_init()
 {
     __disable_irq();
     WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;     // stop watchdog timer
-
+    piezzo_init();
     init_button_zero();
     init_button_one();
     lcd_init();
@@ -61,7 +61,7 @@ void system_init()
 
     __enable_irq();
     hd44780_clear_screen();
-    display_welcocom_screen();
+    display_welcome_screen();
 
 
 }
