@@ -12,6 +12,6 @@
 #define BUZZER 0x10 // BIT 4
 
 void piezzo_init(void);
-void play_note(int note, int duration);
+void piezzo_turn_alarm_off(void);
 
 #endif /* PIEZZO_H_ */

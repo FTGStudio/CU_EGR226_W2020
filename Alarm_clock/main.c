@@ -15,11 +15,13 @@
 #include "clock_logic.h"
 #include "lcd.h"
 #define LOAD_VALUE 0x02
-// Testing
+
 void system_init(void);
 void initialize_timer32(void);
 void display_reaction_time(void);
 
+enum STATES {IDLE, BUTTON0, BUTTON1, BUTTON2, BUTTON3, TURN_ON_LED};
+int current_state = IDLE;
 
 /**
  * main.c
@@ -29,6 +31,21 @@ void main(void)
     system_init();
     while(1)
     {
+        switch(current_state)
+        {
+        case BUTTON0:
+            piezzo_turn_alarm_off();
+            break;
+        case BUTTON1:
+            piezzo_turn_alarm_off();
+            break;
+        case BUTTON2:
+            piezzo_turn_alarm_off();
+            break;
+        case BUTTON3:
+            piezzo_turn_alarm_off();
+            break;
+        }
     }
 }
 
@@ -52,6 +69,8 @@ void system_init()
     piezzo_init();
     init_button_zero();
     init_button_one();
+    init_button_two();
+    init_button_three();
     lcd_init();
     init_button_interrupts();
     led_init();
@@ -64,6 +83,7 @@ void system_init()
 
 
 }
+
 /*
  *
  * Description:
@@ -78,9 +98,29 @@ void system_init()
  */
 void PORT5_IRQHandler()
 {
-
+    if(button_read_zero())
+    {
+        current_state = BUTTON0;
+    }
+    else if(button_read_one())
+    {
+        current_state = BUTTON1;
+    }
+    else if(button_read_two())
+    {
+        current_state = BUTTON2;
+    }
     P5->IFG &= ~3;// Clear the flag
 }
+
+void PORT6_IRQHandler()
+{
+    if(button_read_three())
+    {
+        current_state = BUTTON3;
+    }
+}
+
 /*
  * Description
  *
