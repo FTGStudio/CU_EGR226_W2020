@@ -15,7 +15,7 @@
 #include "clock_logic.h"
 #include "lcd.h"
 #define LOAD_VALUE 0x02
-
+// Testing
 void system_init(void);
 void initialize_timer32(void);
 void display_reaction_time(void);
@@ -29,7 +29,6 @@ void main(void)
     system_init();
     while(1)
     {
-
     }
 }
 
@@ -50,6 +49,7 @@ void system_init()
 {
     __disable_irq();
     WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;     // stop watchdog timer
+
 
     piezzo_init();
     init_button_zero();
