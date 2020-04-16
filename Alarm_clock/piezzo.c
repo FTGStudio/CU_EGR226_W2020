@@ -1,50 +1,32 @@
 #include "piezzo.h"
 #include "msp.h"
 
-void redirect(void);
+
+/*
+ *  Description:
+ *
+ *  This function will initialize timer 16 as a pwm for our piezzo buzzer
+ *
+ */
 void piezzo_init(void)
 {
-    /*
-     * Duty Cycle = 50%
-     * Output Frequency  = (F(timer) / Prescalers) / (TAxCCR0 + 1)
-     *  We desire a PWM of 10kHz
-     *
-     *  3 MHz / 10 kHz = 300
-     *  10kHz = Output Frequency
-     */
+    /* Configure P2.4 as Timer A0.1 output */
+    P2->SEL0 |= 0x80;
+    P2->SEL1 &= ~0x80;
+    P2->DIR |= 0x80;
 
-
-    TIMER_A0->CTL = 0x212;
-    TIMER_A0->CCTL[1] = 0xB0;
-    TIMER_A0->CCR[1] = 300;
-    TIMER_A0->CCTL[1] |= 0x10;
-
-    // Configure 2.4 as Timer A).1 compare output
-    P2->SEL0 |= 0x10;
-    P2->SEL1 &= 0x10;
-    P2->DIR |= 0x10;
-
-    redirect();
+    /* configure TimerA0.4 as PWM */
+    TIMER_A0->CCR[0] = 3826-1;     /* PWM Period */
+    TIMER_A0->CCR[4] = 3826/2;     /* CCR4 PWM duty cycle */
+    TIMER_A0->CCTL[4] = 0xE0;       /* CCR4 reset/set mode */
+    TIMER_A0->CTL = 0x0214;         /* use SMCLK, count up, clear TA0R register */
 
     NVIC_SetPriority(TA0_N_IRQn, 3);
     NVIC_EnableIRQ(TA0_N_IRQn);
-
 }
-
 
 void TA0_N_IRQHandler(void)
 {
     TIMER_A0->CCTL[1] &= ~1;
 }
 
-
-void redirect(void)
-{
-    PMAP->KEYID = 0x2D52;
-    P2MAP->PMAP_REGISTER1 = PMAP_TA0CCR1A; // Map P2.4 to TA0.1
-    P2->DIR |= 16;
-    P2->SEL0 |= 16;
-    P2->SEL1 |= 16;
-    PMAP->CTL= 1;
-    PMAP->KEYID = 0;
-}
