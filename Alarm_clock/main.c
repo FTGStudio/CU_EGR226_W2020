@@ -30,18 +30,21 @@ void main(void)
 {
     system_init();
     delay_ms(1000);
-    piezzo_turn_alarm_off();
     while(1)
     {
         switch(current_state)
         {
         case BUTTON0:
+            piezzo_turn_alarm_off();
             break;
         case BUTTON1:
+            piezzo_turn_alarm_off();
             break;
         case BUTTON2:
+            piezzo_turn_alarm_off();
             break;
         case BUTTON3:
+            piezzo_turn_alarm_off();
             break;
         }
     }
