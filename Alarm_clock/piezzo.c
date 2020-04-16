@@ -1,6 +1,5 @@
 #include "piezzo.h"
 #include "msp.h"
-#include "notes.h"
 
 /*
  *  Description:
