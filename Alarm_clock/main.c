@@ -20,13 +20,16 @@ void system_init(void);
 void initialize_timer32(void);
 void display_reaction_time(void);
 
-
+enum STATES {IDLE, BUTTON0, BUTTON1, BUTTON2, BUTTON3};
+int current_state = IDLE;
 /**
  * main.c
  */
 void main(void)
 {
     system_init();
+    delay_ms(1000);
+    piezzo_turn_alarm_off();
     while(1)
     {
     }
@@ -80,6 +83,23 @@ void system_init()
  */
 void PORT5_IRQHandler()
 {
+    if(button_read_zero())
+    {
+        current_state = BUTTON0;
+    }
+    if(button_read_one())
+    {
+        current_state = BUTTON1;
+    }
+    if(button_read_two())
+    {
+        current_state = BUTTON2;
+    }
+    if(button_read_three())
+    {
+        current_state = BUTTON3;
+    }
+
 
     P5->IFG &= ~3;// Clear the flag
 }
