@@ -29,9 +29,25 @@ void main(void)
 {
     system_init();
     delay_ms(1000);
-    piezzo_turn_alarm_off();
+
     while(1)
     {
+        switch(current_state)
+        {
+        case BUTTON0:
+            piezzo_turn_alarm_off();
+            break;
+
+        case BUTTON1:
+            piezzo_turn_alarm_off();
+            break;
+        case BUTTON2:
+            piezzo_turn_alarm_off();
+            break;
+        case BUTTON3:
+            piezzo_turn_alarm_off();
+            break;
+        }
     }
 }
 
@@ -52,11 +68,11 @@ void system_init()
 {
     __disable_irq();
     WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;     // stop watchdog timer
-
-
     piezzo_init();
     init_button_zero();
     init_button_one();
+    init_button_two();
+    init_button_three();
     lcd_init();
     init_button_interrupts();
     led_init();
@@ -95,13 +111,21 @@ void PORT5_IRQHandler()
     {
         current_state = BUTTON2;
     }
+
+
+
+    P5->IFG &= ~3;// Clear the flag
+}
+
+void PORT6_IRQHandler()
+{
+
     if(button_read_three())
     {
         current_state = BUTTON3;
     }
+    P6->IFG &= ~3;// Clear the flag
 
-
-    P5->IFG &= ~3;// Clear the flag
 }
 /*
  * Description
