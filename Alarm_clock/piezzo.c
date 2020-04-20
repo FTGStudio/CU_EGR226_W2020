@@ -9,11 +9,8 @@
  */
 void piezzo_init(void)
 {
-<<<<<<< HEAD
-=======
 
 
->>>>>>> 8403434... Updated code with working alarm off and alarm exicute function
     /* configure TimerA0.4 as PWM */
     TIMER_A0->CCR[0] = 6818-1;     /* PWM Period */
     TIMER_A0->CCR[4] = 6818/2;     /* CCR4 PWM duty cycle */
@@ -44,8 +41,6 @@ void piezzo_turn_alarm_on()
     P2->SEL0 |= 0x80;
     P2->SEL1 &= ~0x80;
     P2->DIR |= 0x80;
-<<<<<<< HEAD
-=======
     delay_ms(500);
 
     P2->SEL0 &= ~0x80;
@@ -54,7 +49,6 @@ void piezzo_turn_alarm_on()
     delay_ms(500);
 
 
->>>>>>> 8403434... Updated code with working alarm off and alarm exicute function
 }
 
 void TA0_N_IRQHandler(void)
