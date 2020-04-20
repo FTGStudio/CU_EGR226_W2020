@@ -49,6 +49,8 @@ void main(void)
     }
 }
 
+
+
 /*
  *
  * Description:
@@ -110,7 +112,7 @@ void PORT5_IRQHandler()
     {
         current_state = BUTTON2;
     }
-    P5->IFG &= ~3;// Clear the flag
+    P5->IFG &= ~0x07;// Clear the flags for btn0, btn1, bt2
 }
 
 void PORT6_IRQHandler()
@@ -119,6 +121,7 @@ void PORT6_IRQHandler()
     {
         current_state = BUTTON3;
     }
+    P6->IFG &= ~0x80; // clear the flags for
 }
 
 /*
