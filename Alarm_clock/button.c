@@ -56,7 +56,7 @@ void init_button_one()
  * P5.2 is setup as input
  *
  */
-void init_button_two(void)
+void init_button_two()
 {
     CLR(P5->SEL0, 2); /* Enable GPIO for P5.0 */
     CLR(P5->SEL1, 2);
@@ -75,7 +75,7 @@ void init_button_two(void)
  * P6.7 is setup as input
  *
  */
-void init_button_three(void)
+void init_button_three()
 {
     CLR(P6->SEL0, 7); /* Enable GPIO for P5.0 */
     CLR(P6->SEL1, 7);

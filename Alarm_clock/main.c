@@ -121,6 +121,7 @@ void PORT6_IRQHandler()
     {
         current_state = BUTTON3;
     }
+    P6->IFG &= ~3;// Clear the flag
 }
 
 /*
