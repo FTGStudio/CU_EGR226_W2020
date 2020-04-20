@@ -34,7 +34,7 @@ void main(void)
         switch(current_state)
         {
         case BUTTON0:
-            piezzo_turn_alarm_off();
+            piezzo_turn_alarm_on();
             break;
         case BUTTON1:
             piezzo_turn_alarm_off();
@@ -71,7 +71,7 @@ void system_init()
     init_button_one();
     init_button_two();
     init_button_three();
-    lcd_init();
+    //lcd_init();
     init_button_interrupts();
     led_init();
     initialize_timer32();

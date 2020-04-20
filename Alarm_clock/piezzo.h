@@ -9,9 +9,10 @@
 #define PIEZZO_H_
 
 #define F_CPU 3000000 // 3MHz
-#define BUZZER 0x10 // BIT 4
 
 void piezzo_init(void);
 void piezzo_turn_alarm_off(void);
+void piezzo_turn_alarm_on(void);
+void play_note(int note);
 
 #endif /* PIEZZO_H_ */
