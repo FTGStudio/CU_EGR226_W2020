@@ -40,10 +40,10 @@ void main(void)
             break;
         case BUTTON1:
             break;
-        case SNOOZE:   //Button2
+        case SNOOZE:   //Button2 has now become a function to snooze the alarm
             piezzo_turn_alarm_off();
             break;
-        case ALARM_OFF: //Button3
+        case ALARM_OFF: //Button3 has now become a function to turn off the alarm
             piezzo_turn_alarm_off();
             led_alarm_off();
             break;
