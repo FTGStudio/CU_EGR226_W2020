@@ -35,15 +35,20 @@ void main(void)
         {
         case BUTTON0:
             piezzo_turn_alarm_on();
+            led_alarm_is_set();
+            led_alarm_notification();
             break;
         case BUTTON1:
             piezzo_turn_alarm_off();
+            led_alarm_off();
             break;
         case BUTTON2:
             piezzo_turn_alarm_off();
+            led_alarm_off();
             break;
         case BUTTON3:
             piezzo_turn_alarm_off();
+            led_alarm_off();
             break;
         }
     }
