@@ -35,7 +35,7 @@ void main(void)
         switch(current_state)
         {
         case BUTTON0:
-            piezzo_turn_alarm_off();
+            piezzo_turn_alarm_on();
             break;
 
         case BUTTON1:
@@ -114,7 +114,7 @@ void PORT5_IRQHandler()
 
 
 
-    P5->IFG &= ~3;// Clear the flag
+    P5->IFG &= ~0x07;// Clear the flag for button 0,1,2
 }
 
 void PORT6_IRQHandler()
@@ -124,7 +124,7 @@ void PORT6_IRQHandler()
     {
         current_state = BUTTON3;
     }
-    P6->IFG &= ~3;// Clear the flag
+    P6->IFG &= ~0x80;// Clear the flag
 
 }
 /*
