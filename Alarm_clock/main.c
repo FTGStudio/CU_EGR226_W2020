@@ -35,15 +35,20 @@ void main(void)
         {
         case BUTTON0:
             piezzo_turn_alarm_on();
+            led_alarm_is_set();
+            led_alarm_notification();
             break;
         case BUTTON1:
             piezzo_turn_alarm_off();
+            led_alarm_off();
             break;
         case BUTTON2:
             piezzo_turn_alarm_off();
+            led_alarm_off();
             break;
         case BUTTON3:
             piezzo_turn_alarm_off();
+            led_alarm_off();
             break;
         }
     }
@@ -80,6 +85,7 @@ void system_init()
     __enable_irq();
     hd44780_clear_screen();
     display_welcome_screen();
+    led_system_power();
 
 
 }
@@ -120,7 +126,7 @@ void PORT6_IRQHandler()
     {
         current_state = BUTTON3;
     }
-    P6->IFG &= ~0x08;// Clear the flag for Button3
+    P6->IFG &= ~0x80;// Clear the flag for Button3
 }
 
 /*
