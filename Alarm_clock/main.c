@@ -20,7 +20,11 @@ void system_init(void);
 void initialize_timer32(void);
 void display_reaction_time(void);
 
+<<<<<<< HEAD
 enum STATES {IDLE, BUTTON0, BUTTON1, BUTTON2, BUTTON3, TURN_ON_LED};
+=======
+enum STATES {IDLE, BUTTON0, BUTTON1, SNOOZE, ALARM_OFF, ALARM_EXECUTE};
+>>>>>>> 8403434... Updated code with working alarm off and alarm exicute function
 int current_state = IDLE;
 
 /**
@@ -28,27 +32,55 @@ int current_state = IDLE;
  */
 void main(void)
 {
+
     system_init();
+<<<<<<< HEAD
+=======
+    delay_ms(1000);
+
+
+>>>>>>> 8403434... Updated code with working alarm off and alarm exicute function
     while(1)
     {
         switch(current_state)
         {
         case BUTTON0:
+<<<<<<< HEAD
             piezzo_turn_alarm_on();
             led_alarm_is_set();
             led_alarm_notification();
+=======
+
+            led_alarm_is_set();
+
+>>>>>>> 8403434... Updated code with working alarm off and alarm exicute function
             break;
         case BUTTON1:
             piezzo_turn_alarm_off();
+<<<<<<< HEAD
             led_alarm_off();
+=======
+
+>>>>>>> 8403434... Updated code with working alarm off and alarm exicute function
             break;
-        case BUTTON2:
+        case SNOOZE: // press button 2 to snooze the alarm
+            piezzo_turn_alarm_off();
+<<<<<<< HEAD
+            led_alarm_off();
+=======
+
+>>>>>>> 8403434... Updated code with working alarm off and alarm exicute function
+            break;
+        case ALARM_OFF:     //button 3 used to turn of the alarm led and turn off the buzzer
             piezzo_turn_alarm_off();
             led_alarm_off();
+<<<<<<< HEAD
+=======
             break;
-        case BUTTON3:
-            piezzo_turn_alarm_off();
-            led_alarm_off();
+        case ALARM_EXECUTE:
+            led_alarm_notifcation();
+            piezzo_turn_alarm_on();
+>>>>>>> 8403434... Updated code with working alarm off and alarm exicute function
             break;
         }
     }
@@ -83,6 +115,8 @@ void system_init()
     led_init();
     initialize_timer32();
     setup_initial_conditions();
+    led_system_power();
+
 
     __enable_irq();
     hd44780_clear_screen();
@@ -115,7 +149,7 @@ void PORT5_IRQHandler()
     }
     else if(button_read_two())
     {
-        current_state = BUTTON2;
+        current_state = SNOOZE;
     }
     P5->IFG &= ~0x07;// Clear the flags for btn0, btn1, bt2
 }
@@ -124,7 +158,7 @@ void PORT6_IRQHandler()
 {
     if(button_read_three())
     {
-        current_state = BUTTON3;
+        current_state = ALARM_OFF;
     }
     P6->IFG &= ~0x80; // clear the flags for
 }

@@ -8,6 +8,7 @@
 #ifndef PIEZZO_H_
 #define PIEZZO_H_
 
+#include "util.h"
 #define F_CPU 3000000 // 3MHz
 
 void piezzo_init(void);
