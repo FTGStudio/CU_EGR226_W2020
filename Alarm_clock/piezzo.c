@@ -10,10 +10,7 @@
  */
 void piezzo_init(void)
 {
-    /* Configure P2.4 as Timer A0.1 output */
-    P2->SEL0 |= 0x80;
-    P2->SEL1 &= ~0x80;
-    P2->DIR |= 0x80;
+
 
     /* configure TimerA0.4 as PWM */
     TIMER_A0->CCR[0] = 6818-1;     /* PWM Period */
@@ -41,6 +38,13 @@ void piezzo_turn_alarm_on()
     P2->SEL0 |= 0x80;
     P2->SEL1 &= ~0x80;
     P2->DIR |= 0x80;
+    delay_ms(500);
+
+    P2->SEL0 &= ~0x80;
+    P2->SEL1 &= ~0x80;
+    P2->DIR &= ~0x80;
+    delay_ms(500);
+
 
 }
 

@@ -8,6 +8,7 @@
 #ifndef PIEZZO_H_
 #define PIEZZO_H_
 
+#include "util.h"
 #define F_CPU 3000000 // 3MHz
 #define BUZZER 0x10 // BIT 4
 

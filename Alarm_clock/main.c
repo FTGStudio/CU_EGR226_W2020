@@ -20,32 +20,43 @@ void system_init(void);
 void initialize_timer32(void);
 void display_reaction_time(void);
 
-enum STATES {IDLE, BUTTON0, BUTTON1, BUTTON2, BUTTON3};
+enum STATES {IDLE, BUTTON0, BUTTON1, SNOOZE, ALARM_OFF, ALARM_EXECUTE};
 int current_state = IDLE;
 /**
  * main.c
  */
 void main(void)
 {
+
     system_init();
     delay_ms(1000);
+
 
     while(1)
     {
         switch(current_state)
         {
         case BUTTON0:
-            piezzo_turn_alarm_on();
+
+            led_alarm_is_set();
+
             break;
 
         case BUTTON1:
             piezzo_turn_alarm_off();
+
             break;
-        case BUTTON2:
+        case SNOOZE: // press button 2 to snooze the alarm
             piezzo_turn_alarm_off();
+
             break;
-        case BUTTON3:
+        case ALARM_OFF:     //button 3 used to turn of the alarm led and turn off the buzzer
             piezzo_turn_alarm_off();
+            led_alarm_off();
+            break;
+        case ALARM_EXECUTE:
+            led_alarm_notifcation();
+            piezzo_turn_alarm_on();
             break;
         }
     }
@@ -78,6 +89,8 @@ void system_init()
     led_init();
     initialize_timer32();
     setup_initial_conditions();
+    led_system_power();
+
 
     __enable_irq();
     hd44780_clear_screen();
@@ -109,7 +122,7 @@ void PORT5_IRQHandler()
     }
     if(button_read_two())
     {
-        current_state = BUTTON2;
+        current_state = SNOOZE;
     }
 
 
@@ -122,7 +135,7 @@ void PORT6_IRQHandler()
 
     if(button_read_three())
     {
-        current_state = BUTTON3;
+        current_state = ALARM_OFF;
     }
     P6->IFG &= ~0x80;// Clear the flag
 
