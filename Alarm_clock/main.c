@@ -29,13 +29,12 @@ int current_state = IDLE;
 void main(void)
 {
     system_init();
-    delay_ms(1000);
     while(1)
     {
         switch(current_state)
         {
         case BUTTON0:
-            piezzo_turn_alarm_off();
+            piezzo_turn_alarm_on();
             break;
         case BUTTON1:
             piezzo_turn_alarm_off();
@@ -111,7 +110,7 @@ void PORT5_IRQHandler()
     {
         current_state = BUTTON2;
     }
-    P5->IFG &= ~3;// Clear the flag
+    P5->IFG &= ~0x07;// Clear the flags for Button0, Button1, and Button2
 }
 
 
@@ -121,7 +120,7 @@ void PORT6_IRQHandler()
     {
         current_state = BUTTON3;
     }
-    P6->IFG &= ~3;// Clear the flag
+    P6->IFG &= ~0x08;// Clear the flag for Button3
 }
 
 /*

@@ -14,4 +14,5 @@
 void piezzo_init(void);
 void play_note(int note, int duration);
 void piezzo_turn_alarm_off(void);
+void piezzo_turn_alarm_on(void);
 #endif /* PIEZZO_H_ */

@@ -42,6 +42,21 @@ void piezzo_turn_alarm_off()
 
 
 
+/*
+ *  Description:
+ *
+ *  This function will turn on the alarm
+ *
+ */
+void piezzo_turn_alarm_on()
+{
+    /* Configure P2.7 as Timer A0.1 output */
+    P2->SEL0 |= 0x80;
+    P2->SEL1 &= ~0x80;
+    P2->DIR |= 0x80;
+}
+
+
 void TA0_N_IRQHandler(void)
 {
     TIMER_A0->CCTL[1] &= ~1;
