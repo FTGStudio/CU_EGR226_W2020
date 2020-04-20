@@ -99,6 +99,7 @@ void led_alarm_is_set()
 void led_alarm_off()
 {
     CLR(P3->OUT, 2);
+    CLR(P6->OUT, 1);
 }
 void led_system_power()
 {

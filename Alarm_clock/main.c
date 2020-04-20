@@ -20,7 +20,7 @@ void system_init(void);
 void initialize_timer32(void);
 void display_reaction_time(void);
 
-enum STATES {IDLE, BUTTON0, BUTTON1, BUTTON2, BUTTON3, TURN_ON_LED};
+enum STATES {IDLE, BUTTON0, BUTTON1, SNOOZE, ALARM_OFF, ALARM_EXECUTE, SET_MINUTES};
 int current_state = IDLE;
 
 /**
@@ -39,16 +39,17 @@ void main(void)
             led_alarm_notification();
             break;
         case BUTTON1:
+            break;
+        case SNOOZE:   //Button2
+            piezzo_turn_alarm_off();
+            break;
+        case ALARM_OFF: //Button3
             piezzo_turn_alarm_off();
             led_alarm_off();
             break;
-        case BUTTON2:
-            piezzo_turn_alarm_off();
-            led_alarm_off();
-            break;
-        case BUTTON3:
-            piezzo_turn_alarm_off();
-            led_alarm_off();
+        case ALARM_EXECUTE:
+            led_alarm_notification();
+            piezzo_turn_alarm_on();
             break;
         }
     }
@@ -114,7 +115,7 @@ void PORT5_IRQHandler()
     }
     if(button_read_two())
     {
-        current_state = BUTTON2;
+        current_state = SNOOZE;
     }
     P5->IFG &= ~0x07;// Clear the flags for Button0, Button1, and Button2
 }
@@ -124,7 +125,7 @@ void PORT6_IRQHandler()
 {
     if(button_read_three())
     {
-        current_state = BUTTON3;
+        current_state = ALARM_OFF;
     }
     P6->IFG &= ~0x80;// Clear the flag for Button3
 }
