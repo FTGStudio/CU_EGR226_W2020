@@ -34,11 +34,6 @@ void led_init()
     SET(P6->DIR, 1);
     CLR(P6->OUT, 1); // Set P6.1 as output
 
-    CLR(P6->SEL0, 1);
-    CLR(P6->SEL1, 1);
-    SET(P6->DIR, 1);
-    CLR(P6->OUT, 1);// Set p3.2 as output
-
 }
 /*
  * Description
@@ -101,41 +96,21 @@ void led_alarm_is_set()
 {
     SET(P3->OUT, 2);
 }
+
 void led_alarm_off()
 {
     CLR(P3->OUT, 2);
 }
-void led_system_power()
-{
-    SET(P3->OUT, 3);
-}
-void led_alarm_notification()
-{
-    SET(P6->OUT, 1);
-    delay_ms(500);
-    CLR(P6->OUT, 1);
-    delay_ms(500);
-}
-
 
 void led_system_power()
 {
     SET(P3->OUT, 3);
 }
-void led_alarm_is_set()
-{
-    SET(P3->OUT, 2);
-}
+
 void led_alarm_notifcation()
 {
     SET(P6->OUT, 1);
     delay_ms(500);
     CLR(P6->OUT, 1);
     delay_ms(500);
-}
-void led_alarm_off()
-{
-    CLR(P3->OUT, 2);
-    CLR(P6->OUT, 1);
-
 }
