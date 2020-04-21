@@ -9,7 +9,7 @@
 #define CLOCK_LOGIC_H_
 
 
-void display_welcocom_screen(void);
+void display_welcome_screen(void);
 void setup_initial_conditions(void);
 
 

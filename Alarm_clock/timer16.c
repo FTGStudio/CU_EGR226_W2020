@@ -6,5 +6,29 @@
  */
 
 
-#include <timer16.h>
+#include "timer16.h"
+#include "msp.h"
 
+/*
+ *
+ * Description:
+ *
+ *  Timer A1 is setup for the LCD row/col sync
+ *
+ *
+ * Returns:
+ *
+ *
+ *  Nothing
+ *
+ */
+void initialize_timer_a1()
+{
+    TIMER_A1->CTL = 0x02D1;// SMCLK, ID= /8, up mode, TA clear
+    TIMER_A1->EX0 = 7; // Divide by 8;
+    TIMER_A1->CCR[0] = 47; // 29
+    TIMER_A1->CCTL[0] |= 0x10; // Enable TA1.0 interrupt
+
+    NVIC_SetPriority(TA1_0_IRQn, 2); // Set priority to 3 in NVIC
+    NVIC_EnableIRQ(TA1_0_IRQn);
+}
