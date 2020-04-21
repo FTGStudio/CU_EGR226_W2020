@@ -11,9 +11,9 @@
 
 void display_welcome_screen()
 {
-    hd44780_write_string("WELCOME", 1, 1, CR_LF);
-    hd44780_write_string("PRESS BUTTON", 3, 3, CR_LF);
-    hd44780_write_string("TO START", 4, 3, CR_LF);
+    hd44780_write_string("WELCOME!", 1, 5, NO_CR_LF);
+    hd44780_write_string("TO START PRESS", 3, 2, NO_CR_LF);
+    hd44780_write_string("BUTTON ZERO!", 4, 3, NO_CR_LF);
 }
 
 void setup_initial_conditions()

@@ -8,7 +8,7 @@
 #ifndef RTC_H_
 #define RTC_H_
 
-
+unsigned char rtc_read_seconds(void);
 
 
 
