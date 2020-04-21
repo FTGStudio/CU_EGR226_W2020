@@ -9,7 +9,7 @@
 #define TIMER16_H_
 
 
-
+void initialize_timer_a1(void);
 
 
 #endif /* TIMER16_H_ */

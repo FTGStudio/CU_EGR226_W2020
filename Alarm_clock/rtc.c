@@ -9,3 +9,13 @@
 
 #include "rtc.h"
 #include "msp.h"
+#include "i2c.h"
+
+unsigned char rtc_read_seconds(void)
+{
+    unsigned char data;
+    I2C1_Read(RTC_ADDR, 0, &data);
+
+
+    return data;
+}

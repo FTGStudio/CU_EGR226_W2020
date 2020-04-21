@@ -9,7 +9,7 @@
 #include "hd44780/hd44780.h"
 
 
-void display_welcocom_screen()
+void display_welcome_screen()
 {
     hd44780_write_string("WELCOME", 1, 1, CR_LF);
     hd44780_write_string("PRESS BUTTON", 3, 3, CR_LF);

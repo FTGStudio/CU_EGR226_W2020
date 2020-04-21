@@ -14,11 +14,11 @@
 #include "timer32.h"
 #include "clock_logic.h"
 #include "lcd.h"
+#include "i2c.h"
 #define LOAD_VALUE 0x02
 // Testing
 void system_init(void);
-void initialize_timer32(void);
-void display_reaction_time(void);
+
 
 enum STATES {IDLE, BUTTON0, BUTTON1, SNOOZE, ALARM_OFF, ALARM_EXECUTE};
 int current_state = IDLE;
@@ -43,7 +43,6 @@ void main(void)
             break;
 
         case BUTTON1:
-            piezzo_turn_alarm_off();
 
             break;
         case SNOOZE: // press button 2 to snooze the alarm
@@ -58,7 +57,11 @@ void main(void)
             led_alarm_notifcation();
             piezzo_turn_alarm_on();
             break;
+        default:
+            break;
         }
+      //  rtc_read_seconds();
+        //delay_ms(1000);
     }
 }
 
@@ -87,14 +90,15 @@ void system_init()
     lcd_init();
     init_button_interrupts();
     led_init();
-    initialize_timer32();
+    initialize_timer_a1();
     setup_initial_conditions();
     led_system_power();
+    I2C1_init();
 
 
     __enable_irq();
     hd44780_clear_screen();
-    display_welcocom_screen();
+    display_welcome_screen();
 
 
 }
@@ -140,6 +144,8 @@ void PORT6_IRQHandler()
     P6->IFG &= ~0x80;// Clear the flag
 
 }
+
+
 /*
  * Description
  *
