@@ -34,9 +34,7 @@ void main(void)
         switch(current_state)
         {
         case BUTTON0:
-            piezzo_turn_alarm_on();
             led_alarm_is_set();
-            led_alarm_notification();
             break;
         case BUTTON1:
             break;
