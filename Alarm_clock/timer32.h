@@ -7,9 +7,7 @@
 
 #ifndef TIMER32_H_
 #define TIMER32_H_
-
-#include "hd44780/hd44780.h"
-#define LOAD_VALUE 0x02
+#define THREE_MHZ 3000000 // 1 second @ 3MHz for timer 32
 
 void initialize_timer32(void);
 

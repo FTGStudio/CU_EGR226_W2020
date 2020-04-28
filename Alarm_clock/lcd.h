@@ -10,5 +10,9 @@
 
 
 void lcd_init(void);
+void display_current_time(void);
+void display_set_hour(void);
+void display_set_minute(void);
+void display_user_prompt(void);
 
 #endif /* LCD_H_ */

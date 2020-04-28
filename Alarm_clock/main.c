@@ -1,7 +1,5 @@
 #include <stdbool.h>
 #include <stdio.h>
-#include "timer16.h"
-#include "timer32.h"
 #include "clock_logic.h"
 #include "piezzo.h"
 #include "rtc.h"
@@ -12,16 +10,36 @@
 #include "led.h"
 #include "timer16.h"
 #include "timer32.h"
-#include "clock_logic.h"
 #include "lcd.h"
 #include "i2c.h"
-#define LOAD_VALUE 0x02
+
 
 void system_init(void);
 void initialize_timer_a1(void);
+void initialize_timer32(void);
+void handle_button_input(void);
+void handle_user_selection(void);
+void set_time(bool alarm);
 
-enum STATES {IDLE, BUTTON0, BUTTON1, SNOOZE, ALARM_OFF, ALARM_EXECUTE};
+enum STATES {
+                IDLE,
+                SET_SYSTEM_TIME,
+                BUTTON1,
+                SNOOZE,
+                ALARM_OFF,
+                ALARM_EXECUTE,
+                USER_PROMPT,
+                HANDLE_BUTTON_INPUT,
+                HANDLE_USER_SELECTION,
+                SET_ALARM_TIME,
+            };
 int current_state = IDLE;
+int underflow_count = 0;
+bool set_hour = false;
+bool set_min = false;
+bool confirm_hour = false;
+bool confirm_min = false;
+
 
 /**
  * main.c
@@ -37,16 +55,22 @@ void main(void)
     {
         switch(current_state)
         {
-        case BUTTON0:
 
-            led_alarm_is_set();
-
+        case USER_PROMPT:
+            display_user_prompt();
+            current_state = HANDLE_USER_SELECTION;
             break;
-        case BUTTON1:
-            piezzo_turn_alarm_off();
+        case SET_SYSTEM_TIME:
+            set_time(false);
             break;
         case SNOOZE: // press button 2 to snooze the alarm
             piezzo_turn_alarm_off();
+            // TODO add conditional logic to analyze the time interval
+            if(underflow_count == 10)
+            {
+                current_state = ALARM_EXECUTE;
+                underflow_count = 0;
+            }
             break;
         case ALARM_OFF:     //button 3 used to turn of the alarm led and turn off the buzzer
             piezzo_turn_alarm_off();
@@ -55,6 +79,15 @@ void main(void)
         case ALARM_EXECUTE:
             led_alarm_notifcation();
             piezzo_turn_alarm_on();
+            break;
+        case HANDLE_BUTTON_INPUT:
+            handle_button_input();
+            break;
+        case HANDLE_USER_SELECTION:
+            handle_user_selection();
+            break;
+        case SET_ALARM_TIME:
+            set_time(true);
             break;
         default:
             break;
@@ -97,7 +130,7 @@ void system_init()
 
     __enable_irq();
     hd44780_clear_screen();
-    display_welcome_screen();
+    display_current_time();
 
 
 }
@@ -116,18 +149,7 @@ void system_init()
  */
 void PORT5_IRQHandler()
 {
-    if(button_read_zero())
-    {
-        current_state = BUTTON0;
-    }
-    else if(button_read_one())
-    {
-        current_state = BUTTON1;
-    }
-    else if(button_read_two())
-    {
-        current_state = SNOOZE;
-    }
+    current_state = HANDLE_BUTTON_INPUT;
     P5->IFG &= ~0x07;// Clear the flags for btn0, btn1, bt2
 }
 
@@ -156,11 +178,82 @@ void TA1_0_IRQHandler(void)
     hd44780_timer_isr();
 }
 
-
+/*
+ *
+ *
+ *
+ */
 void T32_INT1_IRQHandler(void)
 {
     TIMER32_1->INTCLR = 0; // clear the raw interrupt flag
-
-    TIMER32_1->LOAD = LOAD_VALUE;
+    TIMER32_1->LOAD = THREE_MHZ;
+    underflow_count++; // Add 1 for each second
 }
 
+
+void handle_button_input()
+{
+    if(current_state != HANDLE_USER_SELECTION)
+    {
+        if(button_read_zero())
+        {
+            if(confirm_hour == false && confirm_min == false)
+            {
+                current_state = USER_PROMPT;
+                confirm_hour = true;
+            }
+            else if(confirm_hour == true && confirm_min == false)
+            {
+                // TODO set the system hour
+                confirm_min = true;
+                set_hour = false;
+                set_min = true;
+            }
+            else if(confirm_hour == true && confirm_min == true)
+            {
+                // TODO set the system minute
+                confirm_hour = false;
+                confirm_min = false;
+            }
+        }
+        else if(button_read_two())
+        {
+            current_state = SNOOZE;
+        }
+    }
+    else if(current_state == HANDLE_USER_SELECTION)
+    {
+        handle_user_selection();
+    }
+}
+
+void handle_user_selection()
+{
+    if(button_read_zero())
+    {
+       current_state = SET_SYSTEM_TIME;
+    }
+    else if(button_read_one())
+    {
+       current_state = SET_ALARM_TIME;
+    }
+}
+
+void set_time(bool alarm)
+{
+    if(set_hour == false && set_min == false)
+    {
+        set_hour = true;
+    }
+    else if(set_hour == true && set_min == false)
+    {
+        display_set_hour();
+        // TODO to actually set the hour
+    }
+    else if(set_hour == false && set_min == true)
+    {
+        //clear the lcd screen
+        display_set_minute();
+        // TODO actually set the minute
+    }
+}
