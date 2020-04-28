@@ -6,7 +6,10 @@
  */
 #include "lcd.h"
 #include "msp.h"
-
+#include "hd44780/hd44780.h"
+#include <string.h>
+#include <stdbool.h>
+#include "util.h"
 
 /*
  * Description:
@@ -29,4 +32,34 @@ void lcd_init()
     P1->SEL1 &= ~0xC0;
     P1->SEL0 &= ~0xC0;
     P1->DIR |= 0xC0;
+}
+
+void display_current_time()
+{
+    hd44780_write_string("12:00", 2, 6, CR_LF);
+
+}
+
+void display_set_hour()
+{
+    hd44780_write_string("  ", 2, 6, CR_LF);
+    delay_ms(500);
+    hd44780_write_string("12:00", 2, 6, CR_LF);
+    delay_ms(500);
+}
+
+void display_set_minute()
+{
+    hd44780_write_string("  ", 2, 9, CR_LF);
+    delay_ms(500);
+    hd44780_write_string("12:00", 2, 6, CR_LF);
+    delay_ms(500);
+}
+
+void display_user_prompt()
+{
+    hd44780_write_string("0) Set System", 1, 1, CR_LF);
+    hd44780_write_string("time", 2, 1, CR_LF);
+    hd44780_write_string("1) Set System", 3, 1, CR_LF);
+    hd44780_write_string("time", 4, 1, CR_LF);
 }

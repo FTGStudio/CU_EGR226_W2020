@@ -11,8 +11,8 @@
 void initialize_timer32(void)
 {
     TIMER32_1->CONTROL = 0xE2;
-    TIMER32_1->LOAD = LOAD_VALUE; // Represent 1 second
-    NVIC_SetPriority(T32_INT1_IRQn, 1);
-    NVIC_DisableIRQ(T32_INT1_IRQn);
+    TIMER32_1->LOAD = THREE_MHZ; // Represent 1 second
+    NVIC_SetPriority(T32_INT1_IRQn, 4);
+    NVIC_EnableIRQ(T32_INT1_IRQn);
 }
 

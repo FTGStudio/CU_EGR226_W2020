@@ -7,9 +7,9 @@
 
 #ifndef TIMER32_H_
 #define TIMER32_H_
-
-#include "hd44780/hd44780.h"
-#define LOAD_VALUE 0x02
+#define THREE_MHZ 3000000
+#include "timer32.h"
+#include "msp.h"
 
 void initialize_timer32(void);
 

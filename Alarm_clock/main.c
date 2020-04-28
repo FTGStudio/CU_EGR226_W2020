@@ -10,22 +10,32 @@
 #include "hd44780/hd44780.h"
 #include "button.h"
 #include "led.h"
-#include "timer16.h"
-#include "timer32.h"
-#include "clock_logic.h"
 #include "lcd.h"
 #include "I2C.h"
-#define LOAD_VALUE 0x02
+
 // Testing
 void system_init(void);
 //void initialize_timer32(void);
 void display_reaction_time(void);
-
-
-
-enum STATES {IDLE, BUTTON0, BUTTON1, SNOOZE, ALARM_OFF, ALARM_EXECUTE, SET_MINUTES};
+void handle_button_input(void);
+void set_time(bool alarm);
+bool set_time_flag = false;
+bool set_hour_flag = false;
+bool set_min_flag = false;
+bool time_confirm_flag = false;
+enum STATES {
+    IDLE,
+    BUTTON1,
+    SET_SYSTEM_TIME,
+    SNOOZE, ALARM_OFF,
+    ALARM_EXECUTE,
+    USER_PROMPT,
+    HANDLE_BUTTON_INPUT,
+    HANDLE_USER_SELECTION,
+    SET_ALARM_TIME
+};
 int current_state = IDLE;
-
+int underflow_count = 0;
 /**
  * main.c
  */
@@ -37,13 +47,24 @@ void main(void)
     {
         switch(current_state)
         {
-        case BUTTON0:
-            led_alarm_is_set();
+        case USER_PROMPT:
+            display_user_prompt();
+            current_state = HANDLE_USER_SELECTION;
             break;
-        case BUTTON1:
+        case SET_SYSTEM_TIME:
+            set_time(false);
             break;
+//        case BUTTON1:
+//            break;
         case SNOOZE:   //Button2 has now become a function to snooze the alarm
             piezzo_turn_alarm_off();
+            led_alarm_off();
+            //TODO add conditional logic to analyze time interval
+            if(underflow_count == 10)
+            {
+                current_state = ALARM_EXECUTE;
+                underflow_count = 0;
+            }
             break;
         case ALARM_OFF: //Button3 has now become a function to turn off the alarm
             piezzo_turn_alarm_off();
@@ -53,11 +74,19 @@ void main(void)
             led_alarm_notification();
             piezzo_turn_alarm_on();
             break;
+
+        case HANDLE_BUTTON_INPUT:
+            handle_button_input();
+            break;
+        case HANDLE_USER_SELECTION:
+            break;
+        case SET_ALARM_TIME:
+            break;
         default:
             break;
         }
-        rtc_read_seconds();
-        delay_ms(1000);
+        //rtc_read_seconds();
+        //delay_ms(1000);
     }
 }
 
@@ -93,8 +122,9 @@ void system_init()
 
     __enable_irq();
     hd44780_clear_screen();
-    display_welcome_screen();
+//    display_welcome_screen();
     led_system_power();
+//    display_current_time();
 
 
 }
@@ -112,20 +142,29 @@ void system_init()
  */
 void PORT5_IRQHandler()
 {
-
-    if(button_read_zero())
+    if(button_read_zero() && set_time_flag == false && current_state != HANDLE_USER_SELECTION)
     {
-        current_state = BUTTON0;
+        current_state = USER_PROMPT;
+        set_time_flag = true;
     }
-    if(button_read_one())
+    else if(button_read_zero() && set_time_flag == true && current_state == HANDLE_USER_SELECTION)
     {
-        current_state = BUTTON1;
+        hd44780_clear_screen();
+        current_state = SET_SYSTEM_TIME;
+        set_hour_flag = true;
     }
-    if(button_read_two())
+    else if(button_read_zero() && current_state == SET_SYSTEM_TIME && set_min_flag == false)
     {
-        current_state = SNOOZE;
+        set_min_flag = true;
+        set_hour_flag = false;
+    }
+    else if(button_read_zero() && current_state == SET_SYSTEM_TIME && set_min_flag == true)
+    {
+        time_confirm_flag = true;
+        set_min_flag = false;
     }
     P5->IFG &= ~0x07;// Clear the flags for Button0, Button1, and Button2
+
 }
 
 
@@ -156,11 +195,47 @@ void TA1_0_IRQHandler(void)
 void T32_INT1_IRQHandler(void)
 {
     TIMER32_1->INTCLR = 0; // clear the raw interrupt flag
-
-        TIMER32_1->LOAD = LOAD_VALUE;
+    TIMER32_1->LOAD = THREE_MHZ;
+    underflow_count++;
 }
 
+void handle_button_input()
+{
 
+}
 
+void confirm_alarm_time()
+{
 
+}
 
+void confirm_system_time()
+{
+
+}
+void set_time(bool alarm)
+{
+    if(set_hour_flag == true)
+    {
+        display_set_hour();
+    }
+    else if(set_min_flag == true)
+    {
+        display_set_minute();
+    }
+    else if(time_confirm_flag == true)
+    {
+            if(alarm)
+            {
+                confirm_alarm_time();
+            }
+            else
+            {
+                confirm_system_time();
+            }
+            current_state = IDLE;
+            set_time_flag = false;
+            delay_ms(1000);
+            hd44780_clear_screen();
+    }
+}
