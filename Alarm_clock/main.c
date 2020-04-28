@@ -17,9 +17,9 @@
 void system_init(void);
 void initialize_timer_a1(void);
 void initialize_timer32(void);
-void handle_button_input(void);
-void handle_user_selection(void);
 void set_time(bool alarm);
+void confirm_alarm_time(void);
+void confirm_system_time(void);
 
 enum STATES {
                 IDLE,
@@ -29,16 +29,15 @@ enum STATES {
                 ALARM_OFF,
                 ALARM_EXECUTE,
                 USER_PROMPT,
-                HANDLE_BUTTON_INPUT,
                 HANDLE_USER_SELECTION,
                 SET_ALARM_TIME,
             };
 int current_state = IDLE;
 int underflow_count = 0;
-bool set_hour = false;
-bool set_min = false;
-bool confirm_hour = false;
-bool confirm_min = false;
+bool set_time_flag = false; // indicate if we're setting time for an alarm or the system
+bool set_hour_flag = false; // indicates if we're setting the hour
+bool set_min_flag = false; // indicates if we're setting the min
+bool time_confirm_flag = false; // indicates that the time we want to save for the alarm or system
 
 
 /**
@@ -80,11 +79,7 @@ void main(void)
             led_alarm_notifcation();
             piezzo_turn_alarm_on();
             break;
-        case HANDLE_BUTTON_INPUT:
-            handle_button_input();
-            break;
         case HANDLE_USER_SELECTION:
-            handle_user_selection();
             break;
         case SET_ALARM_TIME:
             set_time(true);
@@ -149,7 +144,44 @@ void system_init()
  */
 void PORT5_IRQHandler()
 {
-    current_state = HANDLE_BUTTON_INPUT;
+
+    if(button_read_zero() &&
+            set_time_flag == false &&
+            current_state != HANDLE_USER_SELECTION)
+    {
+        current_state = USER_PROMPT;
+        set_time_flag = true;
+    }
+    else if(button_read_zero() &&
+            set_time_flag == true &&
+            current_state == HANDLE_USER_SELECTION)
+    {
+        hd44780_clear_screen();
+        current_state = SET_SYSTEM_TIME;
+        set_hour_flag = true;
+    }
+    else if(button_read_one() &&
+            set_time_flag == true &&
+            current_state == HANDLE_USER_SELECTION)
+    {
+        current_state = SET_ALARM_TIME;
+        set_hour_flag = true;
+    }
+    else if(button_read_zero() &&
+            current_state == SET_SYSTEM_TIME &&
+            set_min_flag == false)
+    {
+        set_min_flag = true;
+        set_hour_flag = false;
+    }
+    else if(button_read_zero() &&
+            current_state == SET_SYSTEM_TIME &&
+            set_min_flag == true)
+    {
+        time_confirm_flag = true;
+        set_min_flag = false;
+    }
+
     P5->IFG &= ~0x07;// Clear the flags for btn0, btn1, bt2
 }
 
@@ -191,69 +223,40 @@ void T32_INT1_IRQHandler(void)
 }
 
 
-void handle_button_input()
+void confirm_alarm_time()
 {
-    if(current_state != HANDLE_USER_SELECTION)
-    {
-        if(button_read_zero())
-        {
-            if(confirm_hour == false && confirm_min == false)
-            {
-                current_state = USER_PROMPT;
-                confirm_hour = true;
-            }
-            else if(confirm_hour == true && confirm_min == false)
-            {
-                // TODO set the system hour
-                confirm_min = true;
-                set_hour = false;
-                set_min = true;
-            }
-            else if(confirm_hour == true && confirm_min == true)
-            {
-                // TODO set the system minute
-                confirm_hour = false;
-                confirm_min = false;
-            }
-        }
-        else if(button_read_two())
-        {
-            current_state = SNOOZE;
-        }
-    }
-    else if(current_state == HANDLE_USER_SELECTION)
-    {
-        handle_user_selection();
-    }
+
 }
 
-void handle_user_selection()
+void confirm_system_time()
 {
-    if(button_read_zero())
-    {
-       current_state = SET_SYSTEM_TIME;
-    }
-    else if(button_read_one())
-    {
-       current_state = SET_ALARM_TIME;
-    }
+
 }
 
 void set_time(bool alarm)
 {
-    if(set_hour == false && set_min == false)
-    {
-        set_hour = true;
-    }
-    else if(set_hour == true && set_min == false)
+    if(set_hour_flag == true)
     {
         display_set_hour();
-        // TODO to actually set the hour
     }
-    else if(set_hour == false && set_min == true)
+    else if(set_min_flag == true)
     {
-        //clear the lcd screen
         display_set_minute();
-        // TODO actually set the minute
     }
+    else if(time_confirm_flag == true)
+    {
+        if(alarm)
+        {
+            confirm_alarm_time();
+        }
+        else
+        {
+            confirm_system_time();
+        }
+        current_state = IDLE;
+        set_time_flag = false;
+        delay_ms(1000);
+        hd44780_clear_screen();
+    }
+
 }
