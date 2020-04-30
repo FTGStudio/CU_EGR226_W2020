@@ -10,7 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "util.h"
-
+#include <strings.h>
 /*
  * Description:
  *
@@ -40,19 +40,25 @@ void display_current_time()
 
 }
 
-void display_set_hour()
+void display_set_hour(char* h_pos_0, char* h_pos_1)
 {
+    char* tmp_string = "";
+    strcat(h_pos_0, h_pos_1);
     hd44780_write_string("  ", 2, 6, CR_LF);
     delay_ms(500);
-    hd44780_write_string("12:00", 2, 6, CR_LF);
+    hd44780_write_string(tmp_string, 2, 6, CR_LF);
     delay_ms(500);
 }
 
-void display_set_minute()
+void display_set_minute(char* m_pos_0, char* m_pos_1)
 {
+    char* tmp_string = "";
+    strcat(m_pos_0, m_pos_1);
+
+
     hd44780_write_string("  ", 2, 9, CR_LF);
     delay_ms(500);
-    hd44780_write_string("12:00", 2, 6, CR_LF);
+    hd44780_write_string(tmp_string, 2, 6, CR_LF);
     delay_ms(500);
 }
 

@@ -12,12 +12,24 @@
 #include "led.h"
 #include "lcd.h"
 #include "I2C.h"
+#include "ascii_time.h"
+
+//TODO
+/*
+ * Implement button handling (specifically detect releases button, instead of pushes)
+ * Implement functionality for button (set the time)
+ * Implement a way to monitor the alarm time
+ */
+
+
 
 // Testing
 void system_init(void);
 //void initialize_timer32(void);
 void display_reaction_time(void);
 void handle_button_input(void);
+void confirm_system_time(void);
+void confirm_alarm_time(void);
 void set_time(bool alarm);
 bool set_time_flag = false;
 bool set_hour_flag = false;
@@ -25,17 +37,18 @@ bool set_min_flag = false;
 bool time_confirm_flag = false;
 enum STATES {
     IDLE,
-    BUTTON1,
     SET_SYSTEM_TIME,
-    SNOOZE, ALARM_OFF,
+    SNOOZE,
+    ALARM_OFF,
     ALARM_EXECUTE,
     USER_PROMPT,
-    HANDLE_BUTTON_INPUT,
     HANDLE_USER_SELECTION,
     SET_ALARM_TIME
 };
 int current_state = IDLE;
 int underflow_count = 0;
+int hour_counter = 5;
+int minute_counter = 7;
 /**
  * main.c
  */
@@ -43,6 +56,7 @@ void main(void)
 {
 
     system_init();
+
     while(1)
     {
         switch(current_state)
@@ -73,10 +87,6 @@ void main(void)
         case ALARM_EXECUTE:
             led_alarm_notification();
             piezzo_turn_alarm_on();
-            break;
-
-        case HANDLE_BUTTON_INPUT:
-            handle_button_input();
             break;
         case HANDLE_USER_SELECTION:
             break;
@@ -217,11 +227,11 @@ void set_time(bool alarm)
 {
     if(set_hour_flag == true)
     {
-        display_set_hour();
+        display_set_hour(hour_characters[hour_counter][0], hour_characters[hour_counter][1]);
     }
     else if(set_min_flag == true)
     {
-        display_set_minute();
+        display_set_minute(minutes_characters[minute_counter][0], minutes_characters[minute_counter][1]);
     }
     else if(time_confirm_flag == true)
     {
